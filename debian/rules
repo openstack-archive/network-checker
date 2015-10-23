@@ -7,7 +7,7 @@ topdir=$(shell pwd)
 	dh $@ --with python2
 
 override_dh_auto_install:
-	python setup.py install -O0 --single-version-externally-managed --install-layout=deb  --root=$(topdir)/debian/nailgun-net-check
+	python setup.py install -O0 --single-version-externally-managed --install-layout=deb  --root=$(topdir)/debian/network-checker
 	dh_auto_install
 override_dh_auto_build:
 	dh_clean
