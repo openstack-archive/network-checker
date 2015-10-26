@@ -26,6 +26,7 @@ class TestUrlCheckerCommands(unittest.TestCase):
 
     @mock.patch('requests.get')
     def test_check_urls_success(self, get_mock):
+        cli.UrlAccessCheckApp.LOG_FILENAME = './url_access_checker.log'
         response_mock = mock.Mock()
         response_mock.status_code = 200
         get_mock.return_value = response_mock
