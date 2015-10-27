@@ -1,1 +1,1 @@
-recursive-include network_checker *
+global-exclude *.pyc
