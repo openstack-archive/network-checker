@@ -1,0 +1,9 @@
+Verified+2: Jenkins
+Code-Review+2: Sebastian Kalinowski <skalinowski@mirantis.com>
+Workflow+1: Sebastian Kalinowski <skalinowski@mirantis.com>
+Code-Review+1: Sergey Kulanov <skulanov@mirantis.com>
+Submitted-by: Jenkins
+Submitted-at: Thu, 29 Oct 2015 15:54:44 +0000
+Reviewed-on: https://review.openstack.org/238519
+Project: openstack/network-checker
+Branch: refs/heads/master
