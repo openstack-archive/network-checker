@@ -16,7 +16,7 @@ import setuptools
 
 
 setuptools.setup(
-    name="nailgun-net-check",
+    name="network-checker",
     version='8.0.0',
     author="Mirantis Inc",
     classifiers=[

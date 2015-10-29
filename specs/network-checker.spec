@@ -22,6 +22,7 @@ Requires:  python-requests
 Requires:  python-netifaces
 BuildRequires: libpcap-devel
 BuildRequires: python-setuptools
+Conflicts: nailgun-net-check
 
 %description
 This is a network tool that helps to verify networks connectivity
