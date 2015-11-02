@@ -8,6 +8,7 @@ Standards-Version: 3.9.2
 Homepage: mirantis.com
 
 Package: network-checker
+Replaces: nailgun-net-check
 Architecture: all
 Depends: ${misc:Depends}, ${python:Depends}, python-pypcap, vlan, python-scapy, cliff-tablib, python-stevedore, python-daemonize, python-yaml, tcpdump, python-requests, python-six
 Description: Network connectivity check tool
