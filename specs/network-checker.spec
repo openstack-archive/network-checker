@@ -7,6 +7,7 @@ Version:   %{version}
 Release:   1%{?dist}~mos8.0.0
 Source0: %{name}-%{version}.tar.gz
 License:   GPLv2
+Obsoletes: nailgun-net-check
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL:       http://github.com/Mirantis
 Requires:  vconfig
