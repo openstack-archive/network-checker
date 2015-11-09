@@ -21,6 +21,9 @@ Requires:  python-yaml
 Requires:  tcpdump
 Requires:  python-requests
 Requires:  python-netifaces
+BuildRequires: git
+BuildRequires: python-setuptools
+BuildRequires: python-pbr
 BuildRequires: libpcap-devel
 BuildRequires: python-setuptools
 Conflicts: nailgun-net-check
