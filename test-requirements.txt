@@ -1,9 +1,6 @@
-# The order of packages is significant, because pip processes them in the order
-# of appearance. Changing the order has an impact on the overall integration
-# process, which may cause wedges in the gate later.
-
+-r requirements.txt
 hacking==0.7
-mock<=1.0.1,>=1.0
+mock==1.0.1
 pytest
-unittest2<=0.8.0
-requests-mock>=0.4.0 # Apache-2.0
+unittest2
+requests-mock

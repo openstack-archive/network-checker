@@ -28,6 +28,3 @@ test_run/*
 *.egg-info
 
 .bashrc
-
-AUTHORS
-ChangeLog
