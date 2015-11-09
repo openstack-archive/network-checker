@@ -2,7 +2,13 @@ Source: network-checker
 Section: unknown
 Priority: net
 Maintainer: Mirantis Product <product@mirantis.com>
-Build-Depends: debhelper (>= 8.0.0), python-setuptools
+Build-Depends: debhelper (>= 9),
+               dh-systemd,
+               git,
+	           openstack-pkg-tools (>= 8~),
+	           python-all (>= 2.6.6-3),
+	           python-pbr (>= 0.7.0),
+	           python-setuptools
 X-Python-Version: 2.6, 2.7
 Standards-Version: 3.9.2
 Homepage: mirantis.com
