@@ -1,1 +1,8 @@
-recursive-include network_checker *
+exclude debian
+exclude specs
+exclude Dockerfile
+exclude Vagrantfile
+exclude .gitignore
+exclude .gitreview
+exclude Makefile
+global-exclude *.pyc
