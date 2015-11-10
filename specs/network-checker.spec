@@ -21,7 +21,9 @@ Requires:  python-yaml
 Requires:  tcpdump
 Requires:  python-requests
 Requires:  python-netifaces
+BuildRequires: git
 BuildRequires: libpcap-devel
+BuildRequires: python-pbr
 BuildRequires: python-setuptools
 Conflicts: nailgun-net-check
 
@@ -33,10 +35,10 @@ between hosts in network.
 %setup -cq -n %{name}-%{version}
 
 %build
-cd %{_builddir}/%{name}-%{version} && python setup.py build
+cd %{_builddir}/%{name}-%{version} && PBR_VERSION=%{version} python setup.py build
 
 %install
-cd %{_builddir}/%{name}-%{version} && python setup.py install --single-version-externally-managed -O1 --root=$RPM_BUILD_ROOT --record=%{_builddir}/%{name}-%{version}/INSTALLED_FILES
+cd %{_builddir}/%{name}-%{version} && PBR_VERSION=%{version} python setup.py install --single-version-externally-managed -O1 --root=$RPM_BUILD_ROOT --record=%{_builddir}/%{name}-%{version}/INSTALLED_FILES
 
 %clean
 rm -rf $RPM_BUILD_ROOT
