@@ -36,7 +36,7 @@ between hosts in network.
 cd %{_builddir}/%{name}-%{version} && python setup.py build
 
 %install
-cd %{_builddir}/%{name}-%{version} && python setup.py install --single-version-externally-managed -O1 --root=$RPM_BUILD_ROOT --record=%{_builddir}/%{name}-%{version}/INSTALLED_FILES
+cd %{_builddir}/%{name}-%{version} && PBR_VERSION=%{version} python setup.py install --single-version-externally-managed -O1 --root=$RPM_BUILD_ROOT --record=%{_builddir}/%{name}-%{version}/INSTALLED_FILES
 
 %clean
 rm -rf $RPM_BUILD_ROOT
