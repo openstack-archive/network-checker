@@ -3,6 +3,9 @@ DH_VERBOSE=1
 
 topdir=$(shell pwd)
 
+
+export OSLO_PACKAGE_VERSION=$(VERSION)
+
 %:
 	dh $@ --with python2
 
