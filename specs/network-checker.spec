@@ -4,7 +4,7 @@
 Name: %{name}
 Summary:   Network checking package for CentOS6.x
 Version:   %{version}
-Release:   1%{?dist}~mos8.0.0
+Release:   1
 Source0: %{name}-%{version}.tar.gz
 License:   GPLv2
 Obsoletes: nailgun-net-check
@@ -21,7 +21,9 @@ Requires:  python-yaml
 Requires:  tcpdump
 Requires:  python-requests
 Requires:  python-netifaces
+BuildRequires: git
 BuildRequires: libpcap-devel
+BuildRequires: python-pbr
 BuildRequires: python-setuptools
 Conflicts: nailgun-net-check
 
