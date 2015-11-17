@@ -10,17 +10,19 @@ License:   GPLv2
 Obsoletes: nailgun-net-check
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL:       http://github.com/Mirantis
-Requires:  vconfig
-Requires:  scapy
 Requires:  python-argparse
-Requires:  python-pypcap
 Requires:  python-cliff-tablib
-Requires:  python-stevedore
 Requires:  python-daemonize
-Requires:  python-yaml
-Requires:  tcpdump
-Requires:  python-requests
 Requires:  python-netifaces
+Requires:  python-pbr
+Requires:  python-pypcap
+Requires:  python-requests
+Requires:  python-six
+Requires:  python-stevedore
+Requires:  python-yaml
+Requires:  scapy
+Requires:  tcpdump
+Requires:  vconfig
 BuildRequires: libpcap-devel
 BuildRequires: python-setuptools
 Conflicts: nailgun-net-check
@@ -33,10 +35,10 @@ between hosts in network.
 %setup -cq -n %{name}-%{version}
 
 %build
-cd %{_builddir}/%{name}-%{version} && python setup.py build
+cd %{_builddir}/%{name}-%{version} && PBR_VERSION=%{version} python setup.py build
 
 %install
-cd %{_builddir}/%{name}-%{version} && python setup.py install --single-version-externally-managed -O1 --root=$RPM_BUILD_ROOT --record=%{_builddir}/%{name}-%{version}/INSTALLED_FILES
+cd %{_builddir}/%{name}-%{version} && PBR_VERSION=%{version} python setup.py install --single-version-externally-managed -O1 --root=$RPM_BUILD_ROOT --record=%{_builddir}/%{name}-%{version}/INSTALLED_FILES
 
 %clean
 rm -rf $RPM_BUILD_ROOT
