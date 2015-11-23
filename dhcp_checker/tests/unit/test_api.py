@@ -98,3 +98,15 @@ class TestDhcpApi(unittest.TestCase):
         self.assertEqual(sleep_mock.call_count, 3)
         make_listeners.assert_called_once_with(('eth0',))
         self.assertEqual(send_discover.call_count, 3)
+
+    @patch('dhcp_checker.api.utils.filtered_ifaces')
+    @patch('dhcp_checker.api.interfaces')
+    @patch('dhcp_checker.api.send_dhcp_discover')
+    @patch('dhcp_checker.api.make_listeners')
+    def test_check_dhcp_with_no_ifaces(
+            self, make_listeners, send_discover, interfaces, filtered_ifaces):
+        interfaces.return_value = ['eth1']
+        filtered_ifaces.return_value = ['eth1']
+        api.check_dhcp(None, timeout=1, repeat=2)
+        make_listeners.assert_called_once_with(('eth1',))
+        self.assertEqual(send_discover.call_count, 2)

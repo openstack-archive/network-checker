@@ -16,6 +16,7 @@ import itertools
 import logging
 import time
 
+from netifaces import interfaces
 from scapy import config as scapy_config
 
 scapy_config.use_pcap = True
@@ -76,6 +77,10 @@ def check_dhcp(ifaces, timeout=5, repeat=2):
     >>> check_dhcp(['eth1', 'eth2'])
     """
     config = {}
+    if not ifaces:
+        ifaces = interfaces()
+        if 'lo' in ifaces:
+            ifaces.remove('lo')
     for iface in ifaces:
         config[iface] = ()
     return check_dhcp_with_vlans(config, timeout=timeout, repeat=repeat)
