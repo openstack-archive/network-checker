@@ -16,6 +16,7 @@ import itertools
 import logging
 import time
 
+from dhcp_checker.utils import get_ifaces_exclude_lo
 from scapy import config as scapy_config
 
 scapy_config.use_pcap = True
@@ -70,12 +71,14 @@ def check_dhcp_on_eth(iface, timeout):
 def check_dhcp(ifaces, timeout=5, repeat=2):
     """Given list of ifaces. Process them in separate processes
 
-    @ifaces - lsit of ifaces
+    @ifaces - list of ifaces
     @timeout - timeout for scapy to wait for response
     @repeat - number of packets sended
     >>> check_dhcp(['eth1', 'eth2'])
     """
     config = {}
+    if not ifaces:
+        ifaces = get_ifaces_exclude_lo()
     for iface in ifaces:
         config[iface] = ()
     return check_dhcp_with_vlans(config, timeout=timeout, repeat=repeat)

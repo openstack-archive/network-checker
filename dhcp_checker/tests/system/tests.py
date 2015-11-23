@@ -114,6 +114,11 @@ class TestMainFunctions(unittest.TestCase):
         result = api.check_dhcp(ifaces, repeat=3)
         self.assertEqual(len(list(result)), 2)
 
+    def test_with_no_ifaces(self):
+        ifaces = None
+        result = api.check_dhcp(ifaces, repeat=3)
+        self.assertEqual(len(list(result)), 2)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -67,6 +67,11 @@ class TestDhcpUtils(unittest.TestCase):
         command_util().stderr.read.return_value = ''
         self.assertTrue(utils.check_iface_exist('eth0'))
 
+    @patch('dhcp_checker.utils.interfaces')
+    def test_get_ifaces_exclude_lo(self, interfaces):
+        interfaces.return_value = ['lo', 'eth1', 'eth2']
+        self.assertEqual(utils.get_ifaces_exclude_lo(), ['eth1', 'eth2'])
+
     def test_filter_duplicated_results(self):
         test_data = [{'first': 'value'}, {'first': 'value'}]
 
