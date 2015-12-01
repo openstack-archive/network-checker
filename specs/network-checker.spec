@@ -2,7 +2,7 @@
 %{!?version: %define version 8.0.0}
 
 Name: %{name}
-Summary:   Network checking package for CentOS
+Summary:   Network checking package
 Version:   %{version}
 Release:   1%{?dist}~mos8.0.0
 Source0: %{name}-%{version}.tar.gz
@@ -10,19 +10,19 @@ License:   GPLv2
 Obsoletes: nailgun-net-check
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL:       http://github.com/Mirantis
-Requires:  scapy
+Requires:  scapy >= 2.0.0
 %if 0%{?rhel} == 6
 Requires: python-argparse
 Requires: vconfig
 %endif
-Requires:  python-pypcap
-Requires:  python-cliff-tablib
-Requires:  python-stevedore
-Requires:  python-daemonize
-Requires:  python-yaml
+Requires:  python-pypcap >= 1.1-15.1
+Requires:  python-cliff-tablib >= 1.0
+Requires:  python-stevedore >= 1.0.0
+Requires:  python-daemonize >= 1.7.3
+Requires:  python-yaml >= 3.1.0
 Requires:  tcpdump
-Requires:  python-requests
-Requires:  python-netifaces
+Requires:  python-requests >= 2.1.0
+Requires:  python-netifaces >= 0.10.4
 BuildRequires: libpcap-devel
 BuildRequires: python-setuptools
 Conflicts: nailgun-net-check
@@ -35,10 +35,10 @@ between hosts in network.
 %setup -cq -n %{name}-%{version}
 
 %build
-cd %{_builddir}/%{name}-%{version} && python setup.py build
+cd %{_builddir}/%{name}-%{version} && PBR_VERSION=%{version} python setup.py build
 
 %install
-cd %{_builddir}/%{name}-%{version} && python setup.py install --single-version-externally-managed -O1 --root=$RPM_BUILD_ROOT --record=%{_builddir}/%{name}-%{version}/INSTALLED_FILES
+cd %{_builddir}/%{name}-%{version} && PBR_VERSION=%{version} python setup.py install --single-version-externally-managed -O1 --root=$RPM_BUILD_ROOT --record=%{_builddir}/%{name}-%{version}/INSTALLED_FILES
 
 %clean
 rm -rf $RPM_BUILD_ROOT
