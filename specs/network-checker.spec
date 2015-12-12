@@ -1,10 +1,11 @@
 %define name network-checker
 %{!?version: %define version 8.0.0}
+%{!?release: %define release 1}
 
 Name: %{name}
 Summary:   Network checking package for CentOS
 Version:   %{version}
-Release:   1%{?dist}~mos8.0.0
+Release:   %{release}
 Source0: %{name}-%{version}.tar.gz
 License:   GPLv2
 Obsoletes: nailgun-net-check
