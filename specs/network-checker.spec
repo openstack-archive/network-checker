@@ -1,5 +1,5 @@
 %define name network-checker
-%{!?version: %define version 8.0.0}
+%{!?version: %define version 9.0.0}
 %{!?release: %define release 1}
 
 Name: %{name}
@@ -8,7 +8,7 @@ Version:   %{version}
 Release:   %{release}
 Source0: %{name}-%{version}.tar.gz
 License:   GPLv2
-Obsoletes: nailgun-net-check
+
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 URL:       http://github.com/Mirantis
 Requires:  scapy
