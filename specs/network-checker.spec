@@ -1,6 +1,6 @@
 %define name network-checker
 %{!?version: %define version 8.0.0}
-%{!?release: %define release 1}
+%{!?release: %define release 2}
 
 Name: %{name}
 Summary:   Network checking package for CentOS
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 
 %changelog
+* Fri Dec 18 2015 Alexander Tsamutali <atsamutali@mirantis.com> - 8.0.0-2
+- Rebuild for CentOS 7.1.
+
 * Thu Nov 19 2015 Aleksandr Mogylchenko <amogylchenko@mirantis.com> 8.0.1-1
 - make spec compatible with CentOS 7
 
