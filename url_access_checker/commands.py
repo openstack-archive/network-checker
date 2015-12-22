@@ -33,12 +33,23 @@ class CheckUrls(command.Command):
                             help='List of urls to check')
         parser.add_argument('--timeout', type=int, default=60,
                             help='Max time to wait for response, Default: 60')
+        parser.add_argument('--http-proxy', type=str, default=None,
+                            help='Http proxy, Default: None')
+        parser.add_argument('--https-proxy', type=str, default=None,
+                            help='Https proxy, Default: None')
         return parser
 
     def take_action(self, parsed_args):
         LOG.info('Starting url access check for {0}'.format(parsed_args.urls))
+        proxies = {}
+        if parsed_args.http_proxy:
+            proxies['http'] = parsed_args.http_proxy
+        if parsed_args.https_proxy:
+            proxies['https'] = parsed_args.https_proxy
         try:
-            api.check_urls(parsed_args.urls, timeout=parsed_args.timeout)
+            api.check_urls(parsed_args.urls,
+                           proxies=proxies or None,
+                           timeout=parsed_args.timeout)
         except errors.UrlNotAvailable as e:
             sys.stdout.write(str(e))
             raise e
