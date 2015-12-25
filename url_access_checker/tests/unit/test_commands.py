@@ -34,6 +34,19 @@ class TestUrlCheckerCommands(unittest.TestCase):
         exit_code = cli.main(['check'] + self.urls)
         self.assertEqual(exit_code, 0)
 
+    @mock.patch('url_access_checker.api.check_urls')
+    def test_check_urls_proxies(self, check_mock):
+        cli.UrlAccessCheckApp.LOG_FILENAME = './url_access_checker.log'
+        proxies = {
+            'http': 'http_proxy',
+            'https': 'https_proxy'
+        }
+        cli.main(['check',
+                  '--http-proxy', 'http_proxy',
+                  '--https-proxy', 'https_proxy'] + self.urls)
+        check_mock.assert_called_once_with(
+            self.urls, proxies=proxies, timeout=60)
+
     @mock.patch('requests.get')
     def test_check_urls_fail(self, get_mock):
         response_mock = mock.Mock()
