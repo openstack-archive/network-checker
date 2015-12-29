@@ -16,6 +16,7 @@ import re
 import subprocess
 import sys
 
+from netifaces import interfaces
 from scapy import all as scapy
 
 
@@ -69,6 +70,13 @@ def filtered_ifaces(ifaces):
                     iface))
             else:
                 yield iface
+
+
+def get_ifaces_exclude_lo():
+    ifaces = interfaces()
+    if 'lo' in ifaces:
+        ifaces.remove('lo')
+    return ifaces
 
 
 def pick_ip(range_start, range_end):
