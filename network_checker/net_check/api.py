@@ -44,6 +44,7 @@ from scapy import error
 
 from scapy.utils import PcapReader
 
+from network_checker import consts
 from network_checker.net_check.utils import signal_timeout
 
 
@@ -189,6 +190,11 @@ class Actor(object):
             "dev", set_iface,
             "up"])
 
+    def _check_iface_ready(self, iface, vid=None):
+        check_iface = self._iface_name(iface, vid)
+        output = self._execute(['ip', '-o', 'link', 'show', check_iface])
+        return 'state UP' in '\n'.join(output)
+
     def _ensure_iface_up(self, iface, vid=None):
         """Ensures interface is with vid up."""
         if not self._try_iface_up(iface, vid):
@@ -205,6 +211,21 @@ class Actor(object):
                     "Can not bring interface %s with vid %s up" % (iface,
                                                                    str(vid))
                 )
+
+    def _ensure_iface_ready(self, iface, vid=None):
+        self.logger.debug('Waiting %s seconds for %s interface (VLAN %s) '
+                          'is UP...', consts.LINK_UP_TIMEOUT, iface, vid)
+        deadline = time.time() + consts.LINK_UP_TIMEOUT
+        while time.time() < deadline:
+            if self._check_iface_ready(iface, vid):
+                self.logger.debug('Interface %s (VLAN %s) is UP', iface, vid)
+                return
+            time.sleep(1)
+        raise ActorException(
+            self.logger,
+            "Link protocol on interface %s with vid %s isn't UP" % (iface,
+                                                                    str(vid))
+        )
 
     def _ensure_iface_down(self, iface, vid=None):
         set_iface = self._iface_name(iface, vid)
@@ -313,6 +334,7 @@ class Actor(object):
     def _ensure_viface_create_and_up(self, iface, vid):
         self._ensure_viface_create(iface, vid)
         self._ensure_iface_up(iface, vid)
+        self._ensure_iface_ready(iface, vid)
 
     def _ensure_viface_down_and_remove(self, iface, vid):
         self._ensure_iface_down(iface, vid)
@@ -364,6 +386,7 @@ class Sender(Actor):
     def _run(self):
         for iface, vlan in self._iface_vlan_iterator():
             self._ensure_iface_up(iface)
+            self._ensure_iface_ready(iface)
         self._send_packets()
         self._log_ifaces("Interfaces just after sending probing packages")
         for iface in self._iface_iterator():
@@ -439,6 +462,7 @@ class Listener(Actor):
 
         for iface in self._iface_iterator():
             self._ensure_iface_up(iface)
+            self._ensure_iface_ready(iface)
             if iface not in sniffers:
                 listeners.append(self.get_probe_frames(iface))
                 listeners.append(self.get_probe_frames(iface, vlan=True))

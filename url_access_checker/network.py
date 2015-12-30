@@ -14,9 +14,11 @@
 
 from contextlib import contextmanager
 from logging import getLogger
+import time
 
 import netifaces
 
+from url_access_checker import consts
 from url_access_checker.errors import CommandFailed
 from url_access_checker.utils import execute
 
@@ -55,6 +57,11 @@ def check_up(iface):
     return 'UP' in stdout
 
 
+def check_ready(iface):
+    rc, stdout, _ = execute(['ip', '-o', 'link', 'show', iface])
+    return 'state UP' in stdout
+
+
 def log_network_info(stage):
     logger.info('Logging networking info at %s', stage)
     stdout = execute(['ip', 'a'])[1]
@@ -78,6 +85,16 @@ class Eth(object):
                 msg = 'Cannot up interface {0}. Err: {1}'.format(
                     self.iface, err)
                 raise CommandFailed(msg)
+        logger.info('Waiting %s seconds for %s interface is UP...',
+                    consts.LINK_UP_TIMEOUT, self.iface)
+        deadline = time.time() + consts.LINK_UP_TIMEOUT
+        while time.time() < deadline:
+            if check_ready(self.iface):
+                logger.info('Interface %s is UP', self.iface)
+                return
+            time.sleep(1)
+        raise CommandFailed('Link protocol on interface %s '
+                            'isn\'t UP'.format(self.iface))
 
     def teardown(self):
         if self.is_up is False:
