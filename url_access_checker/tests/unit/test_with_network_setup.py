@@ -28,6 +28,7 @@ from url_access_checker import cli
 @patch('url_access_checker.network.check_up')
 @patch('url_access_checker.network.check_exist')
 @patch('url_access_checker.network.check_ifaddress_present')
+@patch('url_access_checker.network.check_ready')
 class TestVerificationWithNetworkSetup(unittest.TestCase):
 
     def assert_by_items(self, expected_items, received_items):
