@@ -28,6 +28,7 @@ from url_access_checker import cli
 @patch('url_access_checker.network.check_up')
 @patch('url_access_checker.network.check_exist')
 @patch('url_access_checker.network.check_ifaddress_present')
+@patch('url_access_checker.network.check_ready')
 class TestVerificationWithNetworkSetup(unittest.TestCase):
 
     def assert_by_items(self, expected_items, received_items):
@@ -35,11 +36,13 @@ class TestVerificationWithNetworkSetup(unittest.TestCase):
         for expected, executed in zip(expected_items, received_items):
             self.assertEqual(expected, executed)
 
-    def test_verification_route(self, mifaddr, mexist, mup, mgat, mexecute):
+    def test_verification_route(self, mifaddr, mexist, mup, mgat, mexecute,
+                                mready):
         mexecute.return_value = (0, '', '')
         mup.return_value = True
         mexist.return_value = True
         mifaddr.return_value = False
+        mready.return_value = True
 
         default_gw, default_iface = '172.18.0.1', 'eth2'
         mgat.return_value = {
@@ -69,11 +72,13 @@ class TestVerificationWithNetworkSetup(unittest.TestCase):
 
         self.assert_by_items(mexecute.call_args_list, execute_stack)
 
-    def test_verification_vlan(self, mifaddr, mexist, mup, mgat, mexecute):
+    def test_verification_vlan(self, mifaddr, mexist, mup, mgat, mexecute,
+                               mready):
         mexecute.return_value = (0, '', '')
         mup.return_value = False
         mexist.return_value = False
         mifaddr.return_value = False
+        mready.return_value = True
 
         default_gw, default_iface = '172.18.0.1', 'eth2'
         mgat.return_value = {
