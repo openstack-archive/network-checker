@@ -1,0 +1,10 @@
+Code-Review+1: Roman Vyalov <rvyalov@mirantis.com>
+Code-Review+2: Igor Kalnitsky <ikalnitsky@mirantis.com>
+Code-Review+2: Aleksey Kasatkin <akasatkin@mirantis.com>
+Workflow+1: Igor Kalnitsky <ikalnitsky@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 05 Jan 2016 13:04:09 +0000
+Reviewed-on: https://review.openstack.org/262250
+Project: openstack/network-checker
+Branch: refs/heads/master
