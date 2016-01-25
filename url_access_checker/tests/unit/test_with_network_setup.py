@@ -125,7 +125,7 @@ class TestVerificationWithNetworkSetup(unittest.TestCase):
 
 
 @patch('url_access_checker.network.check_up')
-class TestInterafceSetup(unittest.TestCase):
+class TestInterfaceSetup(unittest.TestCase):
 
     def assert_raises_message(self, exc_type, msg, func, *args, **kwargs):
         with self.assertRaises(exc_type) as e:
