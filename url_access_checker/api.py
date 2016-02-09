@@ -19,9 +19,10 @@ import os
 import socket
 
 import requests
+import six
 from six.moves import urllib
 
-import url_access_checker.errors as errors
+from url_access_checker import errors
 
 
 def check_urls(urls, proxies=None, timeout=60):
@@ -38,19 +39,20 @@ def check_urls(urls, proxies=None, timeout=60):
     proxies -- proxy servers to use for the request
     timeout -- the max time to wait for a response, default 60 seconds
     """
-    responses = map(lambda u: _get_response_tuple(
-        u, proxies=proxies, timeout=timeout), urls)
-    failed_responses = filter(lambda x: x[0], responses)
+    responses = {u: _get_response(u, proxies=proxies, timeout=timeout)
+                 for u in urls}
+
+    failed_responses = {k: v for k, v in six.iteritems(responses) if v}
 
     if failed_responses:
         raise errors.UrlNotAvailable(json.dumps(
-            {'failed_urls': map(lambda r: r[1], failed_responses)}))
+            {'failed_urls': failed_responses.keys()}))
     else:
         return True
 
 
-def _get_response_tuple(url, proxies=None, timeout=60):
-    """Return a tuple which contains a result of url test
+def _get_response(url, proxies=None, timeout=60):
+    """Return the result of url test
 
     Arguments:
     url -- a string containing url for testing, can be local file
@@ -58,27 +60,26 @@ def _get_response_tuple(url, proxies=None, timeout=60):
     timeout -- the max time to wait for a response, default 60 seconds
 
     Result tuple content:
-        result[0] -- boolean value, True if the url is deemed failed
-        result[1] -- unchange url argument
+        result -- boolean value, True if the url is deemed failed
     """
 
     parsed = urllib.parse.urlparse(url)
     if parsed.scheme == 'file':
-        return _get_file_existence_tuple(url)
+        return _get_file_existence(url)
     elif parsed.scheme in ['http', 'https']:
-        return _get_http_response_tuple(url, proxies, timeout)
+        return _get_http_response(url, proxies, timeout)
     elif parsed.scheme == 'ftp':
-        return _get_ftp_response_tuple(url, timeout)
+        return _get_ftp_response(url, timeout)
     else:
         raise errors.InvalidProtocol(url)
 
 
-def _get_file_existence_tuple(url):
+def _get_file_existence(url):
     path = url[len('file://'):]
-    return (not os.path.exists(path), url)
+    return not os.path.exists(path)
 
 
-def _get_http_response_tuple(url, proxies=None, timeout=60):
+def _get_http_response(url, proxies=None, timeout=60):
     try:
         # requests seems to correctly handle various corner cases:
         # proxies=None or proxies={} mean 'use the default' rather than
@@ -89,26 +90,26 @@ def _get_http_response_tuple(url, proxies=None, timeout=60):
         # default timeout is None which can lead to bad things when processes
         # never exit. LP#1478138
         response = requests.get(url, proxies=proxies, timeout=timeout)
-        return (response.status_code != 200, url)
+        return response.status_code != 200
     except (requests.exceptions.ConnectionError,
             requests.exceptions.Timeout,
             requests.exceptions.HTTPError,
             requests.exceptions.ProxyError,
             ValueError,
             socket.timeout):
-        return (True, url)
+        return True
 
 
-def _get_ftp_response_tuple(url, timeout=60):
-    """Return a tuple which contains a result of ftp url test
+def _get_ftp_response(url, timeout=60):
+    """Return the result of ftp url test
 
-    It will try to open ftp url as anonymous user and return (True, url) if
-    any errors occur, or return (False, url) otherwise.
+    It will try to open ftp url as anonymous user and return True if
+    any errors occur, or return False otherwise.
     """
     try:
         # NOTE(mkwiek): requests don't have tested ftp adapter yet, so
         # lower level urllib2 is used here
         urllib.request.urlopen(url, timeout=timeout)
-        return (False, url)
+        return False
     except urllib.error.URLError:
-        return (True, url)
+        return True
