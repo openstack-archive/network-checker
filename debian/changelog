@@ -1,3 +1,9 @@
+network-checker (9.0.0-1) trusty; urgency=low
+
+  * Bump to version 9.0.0
+
+ -- Sergey Kulanov <skulanov@mirantis.com>  Thu, 10 Mar 2016 11:41:46 +0200
+
 network-checker (8.0.0-1) trusty; urgency=low
 
   * Change version to 8.0.0
