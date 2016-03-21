@@ -1,3 +1,9 @@
+network-checker (10.0.0-1) trusty; urgency=low
+
+  * Bump to version 10.0.0
+
+ -- Sergey Kulanov <skulanov@mirantis.com>  Mon, 21 Mar 2016 13:31:10 +0200
+
 network-checker (9.0.0-1) trusty; urgency=low
 
   * Bump to version 9.0.0

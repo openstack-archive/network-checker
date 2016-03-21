@@ -19,7 +19,7 @@ import setuptools
 
 setuptools.setup(
     name="network-checker",
-    version='9.0.0',
+    version='10.0.0',
     author="Mirantis Inc",
     classifiers=[
         "License :: OSI Approved :: Apache 2.0",
