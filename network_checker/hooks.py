@@ -1,4 +1,4 @@
-#    Copyright 2015 Mirantis, Inc.
+#    Copyright 2014 Mirantis, Inc.
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -14,15 +14,10 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-# THIS FILE IS MANAGED BY THE GLOBAL REQUIREMENTS REPO - DO NOT EDIT
-import setuptools
 
-# According to http://bugs.python.org/issue15881#msg170215
-# this is required to fix issues caused by setuptools and
-# pbr in python < 2.7.4
-try:
-    import multiprocessing  # noqa
-except ImportError:
-    pass
+def setup_hook(config):
+    import pbr
+    import pbr.packaging
 
-setuptools.setup(setup_requires=['pbr>=1.8'], pbr=True)
+    # this monkey patch is to avoid appending git version to version
+    pbr.packaging._get_version_from_git = lambda pre_version: pre_version
