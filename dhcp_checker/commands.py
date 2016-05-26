@@ -105,9 +105,11 @@ class DhcpWithVlansCheck(lister.Lister, BaseCommand):
         return parser
 
     def take_action(self, parsed_args):
-        res = api.check_dhcp_with_vlans(json.loads(parsed_args.config),
-                                        timeout=parsed_args.timeout,
-                                        repeat=parsed_args.repeat)
-        first = res.next()
-        columns = first.keys()
-        return columns, [first.values()] + [item.values() for item in res]
+        res = list(api.check_dhcp_with_vlans(json.loads(parsed_args.config),
+                                             timeout=parsed_args.timeout,
+                                             repeat=parsed_args.repeat))
+        if not res:
+            res = [{}]
+        return (utils.DHCP_OFFER_COLUMNS,
+                [utils.get_item_properties(item, utils.DHCP_OFFER_COLUMNS)
+                 for item in res])
