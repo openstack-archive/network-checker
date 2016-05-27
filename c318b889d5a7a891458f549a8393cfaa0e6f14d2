@@ -1,0 +1,9 @@
+Code-Review+2: Aleksey Kasatkin <akasatkin@mirantis.com>
+Code-Review+2: Dmitry Shulyak <dshulyak@mirantis.com>
+Workflow+1: Aleksey Kasatkin <akasatkin@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 27 May 2016 09:33:54 +0000
+Reviewed-on: https://review.openstack.org/321318
+Project: openstack/network-checker
+Branch: refs/heads/master
