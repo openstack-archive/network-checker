@@ -156,16 +156,16 @@ class TestIfaceStateHelper(unittest.TestCase):
     def test_iface_is_up(self, command, iface_state):
         iface_value = iter(('UP',) * 3)
         iface_state.side_effect = lambda *args, **kwargs: next(iface_value)
-        with utils.IfaceState('eth1') as iface:
-            self.assertEqual(iface, 'eth1')
+        with utils.IfaceState(['eth1']) as ifaces:
+            self.assertEqual(ifaces[0], 'eth1')
         self.assertEqual(iface_state.call_count, 2)
         self.assertEqual(command.call_count, 0)
 
     def test_iface_is_down(self, command, iface_state):
         iface_value = iter(('DOWN', 'UP', 'DOWN'))
         iface_state.side_effect = lambda *args, **kwargs: next(iface_value)
-        with utils.IfaceState('eth1') as iface:
-            self.assertEqual(iface, 'eth1')
+        with utils.IfaceState(['eth1']) as ifaces:
+            self.assertEqual(ifaces[0], 'eth1')
         self.assertEqual(iface_state.call_count, 3)
         self.assertEqual(command.call_count, 2)
         self.assertEqual(command.call_args_list,
@@ -177,7 +177,7 @@ class TestIfaceStateHelper(unittest.TestCase):
         iface_state.side_effect = lambda *args, **kwargs: next(iface_value)
 
         def test_raises():
-            with utils.IfaceState('eth1', retry=4) as iface:
-                self.assertEqual(iface, 'eth1')
+            with utils.IfaceState(['eth1'], retry=4) as ifaces:
+                self.assertEqual(ifaces[0], 'eth1')
         self.assertRaises(EnvironmentError, test_raises)
         self.assertEqual(command.call_count, 4)
