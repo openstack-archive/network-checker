@@ -107,24 +107,42 @@ def make_listeners(ifaces):
 
 
 @utils.filter_duplicated_results
-def check_dhcp_with_vlans(config, timeout=5, repeat=2):
+def check_dhcp_with_vlans(config, timeout=5, repeat=2, w_vlans=True):
     """Provide config of {iface: [vlans..]} pairs
 
     @config - {'eth0': (100, 101), 'eth1': (100, 102)}
+
+    'w_vlans' flag toggles dhcp discover check for tagged interfaces;
+    if it is False - the request will be sent only for real interfaces
+
+    Before the request is sent interfaces are set (if they haven't been before)
+    and after - down-ed (only those up-ed for the purpose of this checking)
+
+    If the flag 'w_vlans' holds True but list of vlans for iface is [0],
+    the check will also be performed only for real interfaces (see logic of
+    utils.VlansContext context manager)
     """
     # vifaces - list of pairs ('eth0', ['eth0.100', 'eth0.101'])
     with utils.VlansContext(config) as vifaces:
         ifaces, vlans = zip(*vifaces)
-        listeners = make_listeners(ifaces)
 
-        for _ in xrange(repeat):
-            for i in utils.filtered_ifaces(itertools.chain(ifaces, *vlans)):
-                send_dhcp_discover(i)
-            time.sleep(timeout)
+        # up interfaces before making the check
+        with utils.IfaceState(ifaces) as rdy_ifaces:
+            listeners = make_listeners(rdy_ifaces)
 
-        for l in listeners:
-            for pkt in l.readpkts():
-                yield utils.format_answer(scapy.Ether(pkt[1]), l.name)
+            for _ in xrange(repeat):
+                ifaces_to_check = (
+                    itertools.chain(rdy_ifaces, *vlans)
+                    if w_vlans else rdy_ifaces
+                )
+
+                for i in utils.filtered_ifaces(ifaces_to_check):
+                    send_dhcp_discover(i)
+                time.sleep(timeout)
+
+            for l in listeners:
+                for pkt in l.readpkts():
+                    yield utils.format_answer(scapy.Ether(pkt[1]), l.name)
 
 
 @utils.single_format
