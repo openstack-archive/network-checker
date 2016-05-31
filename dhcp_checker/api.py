@@ -107,7 +107,7 @@ def make_listeners(ifaces):
 
 
 @utils.filter_duplicated_results
-def check_dhcp_with_vlans(config, timeout=5, repeat=2):
+def check_dhcp_with_vlans(config, timeout=5, repeat=2, w_vlans=False):
     """Provide config of {iface: [vlans..]} pairs
 
     @config - {'eth0': (100, 101), 'eth1': (100, 102)}
@@ -117,9 +117,13 @@ def check_dhcp_with_vlans(config, timeout=5, repeat=2):
         ifaces, vlans = zip(*vifaces)
         listeners = make_listeners(ifaces)
 
+        ifaces_to_check = \
+            itertools.chain(ifaces, *vlans) if w_vlans else ifaces
+
         for _ in xrange(repeat):
-            for i in utils.filtered_ifaces(itertools.chain(ifaces, *vlans)):
-                send_dhcp_discover(i)
+            for iface in utils.filtered_ifaces(ifaces_to_check):
+                with utils.IfaceState(iface) as i:
+                    send_dhcp_discover(i)
             time.sleep(timeout)
 
         for l in listeners:
