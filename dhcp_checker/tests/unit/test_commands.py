@@ -37,7 +37,7 @@ class TestCommandsInterface(unittest.TestCase):
 
     def test_list_dhcp_servers(self, api):
         api.check_dhcp.return_value = iter([expected_response])
-        command = cli.main(['discover', '--ifaces', 'eth0', 'eth1',
+        command = cli.main(['listservers', '--ifaces', 'eth0', 'eth1',
                             '--format', 'json'])
         self.assertEqual(command, 0)
         api.check_dhcp.assert_called_once_with(['eth0', 'eth1'],
