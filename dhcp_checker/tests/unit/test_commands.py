@@ -37,7 +37,7 @@ class TestCommandsInterface(unittest.TestCase):
 
     def test_list_dhcp_servers(self, api):
         api.check_dhcp.return_value = iter([expected_response])
-        command = cli.main(['discover', '--ifaces', 'eth0', 'eth1',
+        command = cli.main(['listservers', '--ifaces', 'eth0', 'eth1',
                             '--format', 'json'])
         self.assertEqual(command, 0)
         api.check_dhcp.assert_called_once_with(['eth0', 'eth1'],
@@ -57,7 +57,8 @@ class TestCommandsInterface(unittest.TestCase):
         config_sample = {'eth1': ['100', '101'],
                          'eth2': range(103, 110)}
         api.check_dhcp_with_vlans.return_value = iter([expected_response])
-        command = cli.main(['vlans', json.dumps(config_sample)])
+        command = cli.main(['discover', json.dumps(config_sample),
+                            '--with-vlans'])
         self.assertEqual(command, 0)
         api.check_dhcp_with_vlans.assert_called_once_with(
-            config_sample, repeat=2, timeout=5)
+            config_sample, repeat=2, timeout=5, w_vlans=True)
