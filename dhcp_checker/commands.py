@@ -102,12 +102,15 @@ class DhcpWithVlansCheck(lister.Lister, BaseCommand):
         parser = super(DhcpWithVlansCheck, self).get_parser(prog_name)
         parser.add_argument('config',
                             help='Ethernet interface name')
+        parser.add_argument('--with-vlans', action='store_true',
+                            help='Enable the check for tagged ifaces')
         return parser
 
     def take_action(self, parsed_args):
         res = list(api.check_dhcp_with_vlans(json.loads(parsed_args.config),
                                              timeout=parsed_args.timeout,
-                                             repeat=parsed_args.repeat))
+                                             repeat=parsed_args.repeat,
+                                             w_vlans=parsed_args.with_vlans))
         if not res:
             res = [{}]
         return (utils.DHCP_OFFER_COLUMNS,
