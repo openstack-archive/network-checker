@@ -11,6 +11,18 @@ Package: network-checker
 Replaces: nailgun-net-check
 Conflicts: nailgun-net-check
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python-pypcap, vlan, python-scapy, cliff-tablib, python-stevedore, python-daemonize, python-yaml, tcpdump, python-requests, python-six
+Depends:tcpdump,
+        vlan,
+        cliff-tablib,
+        python-daemonize,
+        python-netifaces,
+        python-pypcap,
+        python-requests,
+        python-scapy,
+        python-stevedore,
+        python-six,
+        python-yaml,
+        ${misc:Depends},
+        ${python:Depends},
 Description: Network connectivity check tool
  .
