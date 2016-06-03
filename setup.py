@@ -39,9 +39,9 @@ setuptools.setup(
             'urlaccesscheck = url_access_checker.cli:main',
         ],
         'dhcp.check': [
-            'listservers = dhcp_checker.commands:ListDhcpServers',
+            'discover = dhcp_checker.commands:ListDhcpServers',
             'request = dhcp_checker.commands:ListDhcpAssignment',
-            'discover = dhcp_checker.commands:DhcpCheckDiscover'
+            'vlans = dhcp_checker.commands:DhcpWithVlansCheck'
         ],
         'network_checker': [
             'multicast = network_checker.multicast.api:MulticastChecker',
