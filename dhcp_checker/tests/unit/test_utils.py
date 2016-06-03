@@ -14,9 +14,11 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import os
+import StringIO
+
 from mock import call
 from mock import patch
-import os
 import unittest
 
 from scapy import all as scapy
@@ -154,30 +156,36 @@ class TestMultiprocMap(unittest.TestCase):
 class TestIfaceStateHelper(unittest.TestCase):
 
     def test_iface_is_up(self, command, iface_state):
-        iface_value = iter(('UP',) * 3)
+        iface_value = iter(('UP',) * 2)
         iface_state.side_effect = lambda *args, **kwargs: next(iface_value)
-        with utils.IfaceState(['eth1']) as ifaces:
+        with utils.IfaceState(['eth1'], up_wait=0) as ifaces:
             self.assertEqual(ifaces[0], 'eth1')
         self.assertEqual(iface_state.call_count, 2)
         self.assertEqual(command.call_count, 0)
 
     def test_iface_is_down(self, command, iface_state):
-        iface_value = iter(('DOWN', 'UP', 'DOWN'))
+        iface_value = iter(('DOWN', 'DOWN', 'UP', 'UP'))
         iface_state.side_effect = lambda *args, **kwargs: next(iface_value)
-        with utils.IfaceState(['eth1']) as ifaces:
+        with utils.IfaceState(['eth1'], up_wait=0) as ifaces:
             self.assertEqual(ifaces[0], 'eth1')
-        self.assertEqual(iface_state.call_count, 3)
+        self.assertEqual(iface_state.call_count, 4)
         self.assertEqual(command.call_count, 2)
         self.assertEqual(command.call_args_list,
-                         [call('ifconfig', 'eth1', 'up'),
-                          call('ifconfig', 'eth1', 'down')])
+                         [call('ip', 'link', 'set', 'dev', 'eth1', 'up'),
+                          call('ip', 'link', 'set', 'dev', 'eth1', 'down')])
 
     def test_iface_cant_ifup(self, command, iface_state):
-        iface_value = iter(('DOWN',) * 10)
+        iface_value = iter(('DOWN',) * 4)
         iface_state.side_effect = lambda *args, **kwargs: next(iface_value)
 
-        def test_raises():
-            with utils.IfaceState(['eth1'], retry=4) as ifaces:
+        with patch('sys.stderr', new=StringIO.StringIO()) as stderr_mock:
+            with utils.IfaceState(['eth1'], up_wait=0) as ifaces:
                 self.assertEqual(ifaces[0], 'eth1')
-        self.assertRaises(EnvironmentError, test_raises)
-        self.assertEqual(command.call_count, 4)
+
+        self.assertEquals(
+            stderr_mock.getvalue(), 'Tried my best to ifup iface eth1.')
+
+        self.assertEquals(command.call_count, 1)
+        # the 4th call to _iface_state indicates that __exit__'s code
+        # has been executed
+        self.assertEquals(iface_state.call_count, 4)
