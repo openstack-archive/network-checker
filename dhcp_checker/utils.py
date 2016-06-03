@@ -14,11 +14,11 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import copy
 import functools
 import re
 import subprocess
 import sys
+import time
 
 from netifaces import interfaces
 from scapy import all as scapy
@@ -210,13 +210,11 @@ class VlansContext(object):
 class IfaceState(object):
     """Context manager to control state of ifaces while dhcp checker runs"""
 
-    def __init__(self, ifaces, rollback=True, retry=3):
+    def __init__(self, ifaces, rollback=True, wait_up=30):
         self.rollback = rollback
-        self.retry = retry
+        self.wait_up = wait_up
         self.ifaces = ifaces
         self.pre_ifaces_state = self.get_ifaces_state()
-        self.ifaces_state = copy.deepcopy(self.pre_ifaces_state)
-        self.post_ifaces_state = {}
 
     def get_ifaces_state(self):
         state = {}
@@ -225,13 +223,17 @@ class IfaceState(object):
         return state
 
     def iface_up(self, iface):
-        while self.retry and self.ifaces_state[iface] != 'UP':
-            command_util('ifconfig', iface, 'up')
-            self.ifaces_state[iface] = _iface_state(iface)
-            self.retry -= 1
-        if self.ifaces_state[iface] != 'UP':
-            raise EnvironmentError(
-                'Tried my best to ifup iface {0}.'.format(iface))
+        if _iface_state(iface) != 'UP':
+            command_util('ip', 'link', 'set', 'dev', iface, 'up')
+
+            deadline = time.time() + self.wait_up
+            while time.time() < deadline:
+                if _iface_state(iface) == 'UP':
+                    break
+                time.sleep(1)
+            else:
+                sys.stderr.write(
+                    'Tried my best to ifup iface {0}.'.format(iface))
 
     def __enter__(self):
         for iface in self.ifaces:
@@ -240,9 +242,9 @@ class IfaceState(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         for iface in self.ifaces:
-            if self.pre_ifaces_state[iface] != 'UP' and self.rollback:
-                command_util('ifconfig', iface, 'down')
-        self.post_ifaces_state[iface] = _iface_state(iface)
+            if self.pre_ifaces_state[iface] != 'UP' \
+                    and _iface_state(iface) == 'UP' and self.rollback:
+                command_util('ip', 'link', 'set', 'dev', iface, 'down')
 
 
 def create_mac_filter(iface):
