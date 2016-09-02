@@ -70,9 +70,9 @@ class TestDhcpWithNetworkDown(unittest.TestCase):
 
     def test_dhcp_server_on_eth2_down(self):
         """iface should be ifuped in case it's down and rolledback after"""
-        manager = utils.IfaceState([self.iface_down])
-        with manager as ifaces:
-            response = api.check_dhcp_on_eth(ifaces[0], 2)
+        manager = utils.IfaceState(self.iface_down)
+        with manager as iface:
+            response = api.check_dhcp_on_eth(iface, 2)
 
         self.assertEqual(len(response), 1)
         self.assertTrue(response[0]['server_ip'])
@@ -82,9 +82,9 @@ class TestDhcpWithNetworkDown(unittest.TestCase):
 
     def test_dhcp_server_on_eth0_up(self):
         """Test verifies that if iface is up, it won't be touched"""
-        manager = utils.IfaceState([self.iface_up])
-        with manager as ifaces:
-            response = api.check_dhcp_on_eth(ifaces[0], 2)
+        manager = utils.IfaceState(self.iface_up)
+        with manager as iface:
+            response = api.check_dhcp_on_eth(iface, 2)
 
         self.assertEqual(len(response), 1)
         self.assertTrue(response[0]['server_ip'])
@@ -95,9 +95,9 @@ class TestDhcpWithNetworkDown(unittest.TestCase):
     def test_dhcp_server_on_nonexistent_iface(self):
 
         def test_check():
-            manager = utils.IfaceState(['eth10'])
-            with manager as ifaces:
-                api.check_dhcp_on_eth(ifaces[0], 2)
+            manager = utils.IfaceState('eth10')
+            with manager as iface:
+                api.check_dhcp_on_eth(iface, 2)
         self.assertRaises(EnvironmentError, test_check)
 
     def tearDown(self):
