@@ -15,7 +15,6 @@
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os
-import StringIO
 
 from mock import call
 from mock import patch
@@ -23,6 +22,8 @@ from mock import patch
 import unittest
 
 from scapy import all as scapy
+
+from six import StringIO
 
 from dhcp_checker import utils
 
@@ -179,7 +180,7 @@ class TestIfaceStateHelper(unittest.TestCase):
         iface_value = iter(('DOWN',) * 10)
         iface_state.side_effect = lambda *args, **kwargs: next(iface_value)
 
-        with patch('sys.stderr', new=StringIO.StringIO()) as stderr_mock:
+        with patch('sys.stderr', new=StringIO()) as stderr_mock:
             with utils.IfaceState(['eth1'], wait_up=5) as ifaces:
                 self.assertEqual(ifaces[0], 'eth1')
 
