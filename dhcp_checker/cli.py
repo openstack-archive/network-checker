@@ -20,7 +20,7 @@ import sys
 # fixed in cmd2 >=0.6.6
 os.environ['EDITOR'] = '/usr/bin/nano'
 
-from cliff.commandmanager import CommandManager
+from cliff import commandmanager
 
 from fuel_network_checker import base_app
 
@@ -33,7 +33,7 @@ class DhcpApp(base_app.BaseApp):
         super(DhcpApp, self).__init__(
             description='Dhcp check application',
             version='0.1',
-            command_manager=CommandManager('dhcp.check'),
+            command_manager=commandmanager.CommandManager('dhcp.check'),
         )
 
     def configure_logging(self):
