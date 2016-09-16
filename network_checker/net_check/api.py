@@ -44,7 +44,7 @@ scapy_config.use_pcap = True
 import scapy.all as scapy
 from scapy import error
 
-from scapy.utils import PcapReader
+from scapy import utils
 
 from network_checker import consts
 from network_checker.net_check.utils import signal_timeout
@@ -533,7 +533,7 @@ class Listener(Actor):
     def read_pcap_file(self, iface, filename):
         try:
             pcap_file = os.path.join(self.config['pcap_dir'], filename)
-            for pkt in PcapReader(pcap_file):
+            for pkt in utils.PcapReader(pcap_file):
                 self.fprn(pkt, iface)
         except (IOError, error.Scapy_Exception) as exc:
             self.logger.exception(

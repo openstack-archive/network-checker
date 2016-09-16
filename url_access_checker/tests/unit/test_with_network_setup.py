@@ -16,9 +16,7 @@
 
 import unittest
 
-from mock import call
-from mock import Mock
-from mock import patch
+import mock
 import netifaces
 
 from url_access_checker import cli
@@ -27,13 +25,13 @@ from url_access_checker import errors
 from url_access_checker import network
 
 
-@patch('url_access_checker.network.execute')
-@patch('url_access_checker.network.netifaces.gateways')
-@patch('requests.get', Mock(status_code=200))
-@patch('url_access_checker.network.check_ready')
-@patch('url_access_checker.network.check_up')
-@patch('url_access_checker.network.check_exist')
-@patch('url_access_checker.network.check_ifaddress_present')
+@mock.patch('url_access_checker.network.execute')
+@mock.patch('url_access_checker.network.netifaces.gateways')
+@mock.patch('requests.get', mock.Mock(status_code=200))
+@mock.patch('url_access_checker.network.check_ready')
+@mock.patch('url_access_checker.network.check_up')
+@mock.patch('url_access_checker.network.check_exist')
+@mock.patch('url_access_checker.network.check_ifaddress_present')
 class TestVerificationWithNetworkSetup(unittest.TestCase):
 
     def assert_by_items(self, expected_items, received_items):
@@ -63,17 +61,18 @@ class TestVerificationWithNetworkSetup(unittest.TestCase):
         cli.main(cmd)
 
         execute_stack = [
-            call(['ip', 'a']),
-            call(['ip', 'ro']),
-            call(['ip', 'a', 'add', addr, 'dev', iface]),
-            call(['ip', 'ro', 'change', 'default', 'via', gw, 'dev', iface]),
-            call(['ip', 'a']),
-            call(['ip', 'ro']),
-            call(['ip', 'ro', 'change', 'default', 'via', default_gw,
-                  'dev', default_iface]),
-            call(['ip', 'a', 'del', addr, 'dev', iface]),
-            call(['ip', 'a']),
-            call(['ip', 'ro'])]
+            mock.call(['ip', 'a']),
+            mock.call(['ip', 'ro']),
+            mock.call(['ip', 'a', 'add', addr, 'dev', iface]),
+            mock.call(['ip', 'ro', 'change', 'default', 'via',
+                       gw, 'dev', iface]),
+            mock.call(['ip', 'a']),
+            mock.call(['ip', 'ro']),
+            mock.call(['ip', 'ro', 'change', 'default', 'via', default_gw,
+                       'dev', default_iface]),
+            mock.call(['ip', 'a', 'del', addr, 'dev', iface]),
+            mock.call(['ip', 'a']),
+            mock.call(['ip', 'ro'])]
 
         self.assert_by_items(mexecute.call_args_list, execute_stack)
 
@@ -101,30 +100,30 @@ class TestVerificationWithNetworkSetup(unittest.TestCase):
         cli.main(cmd)
 
         execute_stack = [
-            call(['ip', 'a']),
-            call(['ip', 'ro']),
-            call(['ip', 'link', 'set', 'dev', iface, 'up']),
-            call(['ip', 'link', 'add', 'link', 'eth1', 'name',
-                  tagged_iface, 'type', 'vlan', 'id', vlan]),
-            call(['ip', 'link', 'set', 'dev', tagged_iface, 'up']),
-            call(['ip', 'a', 'add', addr, 'dev', tagged_iface]),
-            call(['ip', 'ro', 'change', 'default',
-                  'via', gw, 'dev', tagged_iface]),
-            call(['ip', 'a']),
-            call(['ip', 'ro']),
-            call(['ip', 'ro', 'change', 'default', 'via',
-                  default_gw, 'dev', default_iface]),
-            call(['ip', 'a', 'del', addr, 'dev', tagged_iface]),
-            call(['ip', 'link', 'set', 'dev', tagged_iface, 'down']),
-            call(['ip', 'link', 'delete', tagged_iface]),
-            call(['ip', 'link', 'set', 'dev', iface, 'down']),
-            call(['ip', 'a']),
-            call(['ip', 'ro'])]
+            mock.call(['ip', 'a']),
+            mock.call(['ip', 'ro']),
+            mock.call(['ip', 'link', 'set', 'dev', iface, 'up']),
+            mock.call(['ip', 'link', 'add', 'link', 'eth1', 'name',
+                       tagged_iface, 'type', 'vlan', 'id', vlan]),
+            mock.call(['ip', 'link', 'set', 'dev', tagged_iface, 'up']),
+            mock.call(['ip', 'a', 'add', addr, 'dev', tagged_iface]),
+            mock.call(['ip', 'ro', 'change', 'default',
+                       'via', gw, 'dev', tagged_iface]),
+            mock.call(['ip', 'a']),
+            mock.call(['ip', 'ro']),
+            mock.call(['ip', 'ro', 'change', 'default', 'via',
+                       default_gw, 'dev', default_iface]),
+            mock.call(['ip', 'a', 'del', addr, 'dev', tagged_iface]),
+            mock.call(['ip', 'link', 'set', 'dev', tagged_iface, 'down']),
+            mock.call(['ip', 'link', 'delete', tagged_iface]),
+            mock.call(['ip', 'link', 'set', 'dev', iface, 'down']),
+            mock.call(['ip', 'a']),
+            mock.call(['ip', 'ro'])]
 
         self.assert_by_items(mexecute.call_args_list, execute_stack)
 
 
-@patch('url_access_checker.network.check_up')
+@mock.patch('url_access_checker.network.check_up')
 class TestInterfaceSetup(unittest.TestCase):
 
     def assert_raises_message(self, exc_type, msg, func, *args, **kwargs):
@@ -132,7 +131,7 @@ class TestInterfaceSetup(unittest.TestCase):
             func(*args, **kwargs)
         self.assertEqual(str(e.exception), msg)
 
-    @patch('url_access_checker.network.execute')
+    @mock.patch('url_access_checker.network.execute')
     def test_interface_ready(self, mexecute, mup):
         mexecute.return_value = (0, 'state UP', '')
         mup.return_value = True
@@ -142,7 +141,7 @@ class TestInterfaceSetup(unittest.TestCase):
 
         self.assertTrue(network.check_ready(iface))
 
-    @patch('url_access_checker.network.check_ready')
+    @mock.patch('url_access_checker.network.check_ready')
     def test_negative_interface_down(self, mready, mup):
         mup.return_value = True
         mready.return_value = False
