@@ -19,18 +19,18 @@ import sys
 # fixed in cmd2 >=0.6.6
 os.environ['EDITOR'] = '/usr/bin/nano'
 
-from cliff.commandmanager import CommandManager
+from cliff import commandmanager
 
 from fuel_network_checker import base_app
 
 
 class UrlAccessCheckApp(base_app.BaseApp):
-    
+
     def __init__(self):
         super(UrlAccessCheckApp, self).__init__(
             description='Url access check application',
             version='0.1',
-            command_manager=CommandManager('urlaccesscheck'),
+            command_manager=commandmanager.CommandManager('urlaccesscheck'),
         )
 
 
