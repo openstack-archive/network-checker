@@ -21,7 +21,7 @@ import time
 import netifaces
 
 from url_access_checker import consts
-from url_access_checker.errors import CommandFailed
+from url_access_checker import errors
 from url_access_checker.utils import execute
 
 
@@ -50,7 +50,7 @@ def check_exist(iface):
         return False
     elif rc:
         msg = 'ip link show {0} failed with {1}'.format(iface, err)
-        raise CommandFailed(msg)
+        raise errors.CommandFailed(msg)
     return True
 
 
@@ -86,7 +86,7 @@ class Eth(object):
             if rc:
                 msg = 'Cannot up interface {0}. Err: {1}'.format(
                     self.iface, err)
-                raise CommandFailed(msg)
+                raise errors.CommandFailed(msg)
         logger.info('Waiting %s seconds for %s interface is UP...',
                     consts.LINK_UP_TIMEOUT, self.iface)
         deadline = time.time() + consts.LINK_UP_TIMEOUT
@@ -95,7 +95,7 @@ class Eth(object):
                 logger.info('Interface %s is UP', self.iface)
                 return
             time.sleep(1)
-        raise CommandFailed('Link protocol on interface %s '
+        raise errors.CommandFailed('Link protocol on interface %s '
                             'isn\'t UP'.format(self.iface))
 
     def teardown(self):
@@ -125,7 +125,7 @@ class Vlan(Eth):
                     'Cannot create tagged interface {0}.'
                     ' With parent {1}. Err: {2}'.format(
                         self.iface, self.parent, err))
-                raise CommandFailed(msg)
+                raise errors.CommandFailed(msg)
         super(Vlan, self).setup()
 
     def teardown(self):
@@ -149,7 +149,7 @@ class IP(object):
             if rc:
                 msg = 'Cannot add address {0} to {1}. Err: {2}'.format(
                     self.addr, self.iface, err)
-                raise CommandFailed(msg)
+                raise errors.CommandFailed(msg)
 
     def teardown(self):
         if self.is_present is False:
@@ -181,7 +181,7 @@ class Route(object):
         if rc:
             msg = ('Cannot add default gateway {0} on iface {1}.'
                    ' Err: {2}'.format(self.gateway, self.iface, err))
-            raise CommandFailed(msg)
+            raise errors.CommandFailed(msg)
 
     def teardown(self):
         if (self.default_gateway, self.df_iface) == (None, None):

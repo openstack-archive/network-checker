@@ -17,10 +17,10 @@
 import logging
 from logging import handlers
 
-from cliff.app import App
+from cliff import app
 
 
-class BaseApp(App):
+class BaseApp(app.App):
     DEFAULT_VERBOSE_LEVEL = 0
     LOG_FILENAME = ''  # This needs to be redefined in child class
 
