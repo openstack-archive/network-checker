@@ -27,7 +27,6 @@ from fuel_network_checker import base_app
 
 class DhcpApp(base_app.BaseApp):
     DEFAULT_VERBOSE_LEVEL = 0
-    LOG_FILENAME = '/var/log/dhcp_checker.log'
 
     def __init__(self):
         super(DhcpApp, self).__init__(
