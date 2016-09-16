@@ -25,7 +25,6 @@ from fuel_network_checker import base_app
 
 
 class UrlAccessCheckApp(base_app.BaseApp):
-    LOG_FILENAME = '/var/log/url_access_checker.log'
 
     def __init__(self):
         super(UrlAccessCheckApp, self).__init__(
