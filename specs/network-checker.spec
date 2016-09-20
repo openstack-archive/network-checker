@@ -17,7 +17,7 @@ Requires: python-argparse
 Requires: vconfig
 %endif
 Requires:  python-pypcap
-Requires:  python-cliff-tablib
+Requires:  python-cliff
 Requires:  python-stevedore
 Requires:  python-daemonize
 Requires:  python-yaml
