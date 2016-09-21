@@ -1,0 +1,9 @@
+Code-Review+2: Vladimir Kozhukalov <vkozhukalov@mirantis.com>
+Code-Review+1: Alexandr Kostrikov <akostrikov@mirantis.com>
+Workflow+1: Vladimir Kozhukalov <vkozhukalov@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 21 Sep 2016 09:18:33 +0000
+Reviewed-on: https://review.openstack.org/373906
+Project: openstack/network-checker
+Branch: refs/heads/master
