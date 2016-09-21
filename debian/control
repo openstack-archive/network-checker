@@ -12,7 +12,7 @@ Package: network-checker
 Replaces: nailgun-net-check
 Conflicts: nailgun-net-check
 Architecture: all
-Depends: cliff-tablib,
+Depends: python-cliff,
          python-daemonize,
          python-netifaces,
          python-pypcap,
