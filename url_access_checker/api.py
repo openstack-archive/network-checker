@@ -42,7 +42,7 @@ def check_urls(urls, proxies=None, timeout=60):
     responses = {u: _unavailable_url(u, proxies=proxies, timeout=timeout)
                  for u in urls}
 
-    failed_responses = {k: v for k, v in six.iteritems(responses) if v}
+    failed_responses = {k: v for k, v in responses.items() if v}
 
     if failed_responses:
         raise errors.UrlNotAvailable(json.dumps(
