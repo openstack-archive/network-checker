@@ -184,6 +184,6 @@ class TestIfaceStateHelper(unittest.TestCase):
             with utils.IfaceState(['eth1'], wait_up=5) as ifaces:
                 self.assertEqual(ifaces[0], 'eth1')
 
-        self.assertEquals(
+        self.assertEqual(
             stderr_mock.getvalue(), 'Tried my best to ifup iface eth1.')
-        self.assertEquals(command.call_count, 1)
+        self.assertEqual(command.call_count, 1)
