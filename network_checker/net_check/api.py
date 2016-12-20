@@ -194,8 +194,22 @@ class Actor(object):
 
     def _check_iface_ready(self, iface, vid=None):
         check_iface = self._iface_name(iface, vid)
-        output = self._execute(['ip', '-o', 'link', 'show', check_iface])
-        return 'state UP' in '\n'.join(output)
+        with open('/sys/class/net/{0}/operstate'.format(check_iface)) as f:
+            state = f.readline().strip()
+        if state.lower() == 'up':
+            self.logger.debug('Inteface %s is up', check_iface)
+            return True
+        elif state.lower == 'unknown':
+            self.logger.debug('Inteface %s state is unknown, using ethtool',
+                              check_iface)
+            ethtool_output = self._execute(['ethtool', check_iface])
+            for line in ethtool_output:
+                result = re.match(r'Link\s+detected:\s*(\w+)', line.strip())
+                if result and result.group(1).lower() == 'yes':
+                    self.logger.debug('Link is detected by ethtool for %s',
+                                      check_iface)
+                    return True
+        return False
 
     def _ensure_iface_up(self, iface, vid=None):
         """Ensures interface is with vid up."""
