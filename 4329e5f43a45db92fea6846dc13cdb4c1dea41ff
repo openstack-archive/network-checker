@@ -1,0 +1,9 @@
+Code-Review+2: Alexey Shtokolov <ashtokolov@mirantis.com>
+Code-Review+2: Vladimir Kozhukalov <vkozhukalov@mirantis.com>
+Workflow+1: Vladimir Kozhukalov <vkozhukalov@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 10 Jan 2017 17:18:54 +0000
+Reviewed-on: https://review.openstack.org/417983
+Project: openstack/network-checker
+Branch: refs/heads/stable/mitaka
