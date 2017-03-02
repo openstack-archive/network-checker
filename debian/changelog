@@ -1,3 +1,9 @@
+network-checker (11.0.0-1) unstable; urgency=low
+
+  * Bump version to 11.0.0
+
+ -- Vladimir Kuklin <vkuklin@mirantis.com>  Thu, 02 Mar 2017 19:57:54 +0300
+
 network-checker (10.0.0-2) trusty; urgency=low
 
   * d/control: Add python-netifaces dependency.
