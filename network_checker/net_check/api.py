@@ -199,7 +199,7 @@ class Actor(object):
         if state.lower() == 'up':
             self.logger.debug('Inteface %s is up', check_iface)
             return True
-        elif state.lower == 'unknown':
+        elif state.lower() == 'unknown':
             self.logger.debug('Inteface %s state is unknown, using ethtool',
                               check_iface)
             ethtool_output = self._execute(['ethtool', check_iface])
